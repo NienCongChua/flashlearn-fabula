@@ -16,3 +16,5 @@ export interface FlashcardSet {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type StudyMode = 'flashcards' | 'multiple-choice' | 'matching';

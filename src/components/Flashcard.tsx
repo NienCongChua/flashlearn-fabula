@@ -30,8 +30,9 @@ export function Flashcard({ card, showExample = true }: FlashcardProps) {
 
   return (
     <div 
-      className="flashcard-container w-full perspective bg-card rounded-xl overflow-hidden border shadow-sm"
+      className="flashcard-container w-full perspective bg-card rounded-xl overflow-hidden border shadow-sm cursor-pointer"
       style={{ height: height ? `${height}px` : 'auto' }}
+      onClick={handleFlip}
     >
       <div 
         className={cn(
@@ -50,15 +51,7 @@ export function Flashcard({ card, showExample = true }: FlashcardProps) {
           <div className="text-xs font-medium text-primary mb-2">Term</div>
           <h3 className="text-2xl font-semibold mb-4">{card.term}</h3>
           <div className="flex-grow"></div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="self-end mt-4"
-            onClick={handleFlip}
-          >
-            <RotateCw className="w-4 h-4 mr-2" />
-            Flip
-          </Button>
+          <div className="text-xs text-muted-foreground self-end mt-4">Click to flip</div>
         </div>
 
         {/* Back of card */}
@@ -80,15 +73,7 @@ export function Flashcard({ card, showExample = true }: FlashcardProps) {
           )}
           
           <div className="flex-grow"></div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="self-end mt-4"
-            onClick={handleFlip}
-          >
-            <RotateCw className="w-4 h-4 mr-2" />
-            Flip
-          </Button>
+          <div className="text-xs text-muted-foreground self-end mt-4">Click to flip</div>
         </div>
       </div>
     </div>

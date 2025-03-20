@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
 import { Flashcard as FlashcardType } from '@/types';
 import { Flashcard } from '@/components/Flashcard';
+import { FileUp, FileText } from 'lucide-react';
 
 export function ImportForm() {
   const navigate = useNavigate();
@@ -17,14 +18,31 @@ export function ImportForm() {
   const [description, setDescription] = useState('');
   const [cards, setCards] = useState<FlashcardType[]>([]);
   const [imported, setImported] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setText(content);
+      toast.success('File uploaded successfully');
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read file');
+    };
+    reader.readAsText(file);
+  };
+
   const handleImport = () => {
     if (!text.trim()) {
-      toast.error('Please enter some text to import');
+      toast.error('Please enter some text or upload a file to import');
       return;
     }
 
@@ -80,12 +98,42 @@ export function ImportForm() {
               <br />
               Each flashcard should be on a new line.
             </p>
-            <Textarea 
-              value={text}
-              onChange={handleTextChange}
-              placeholder="Enter your flashcards here..."
-              className="min-h-[300px] font-mono text-sm"
-            />
+            
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <input 
+                  type="file" 
+                  accept=".txt" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                />
+                <Button 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1"
+                >
+                  <FileUp className="w-4 h-4 mr-2" />
+                  Upload Text File
+                </Button>
+                <div className="text-sm text-muted-foreground">or</div>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setText('')}
+                  className="flex-1"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Enter Text Manually
+                </Button>
+              </div>
+              
+              <Textarea 
+                value={text}
+                onChange={handleTextChange}
+                placeholder="Enter your flashcards here or upload a .txt file..."
+                className="min-h-[300px] font-mono text-sm"
+              />
+            </div>
           </div>
           
           <div className="flex justify-end gap-3">
