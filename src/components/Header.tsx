@@ -2,11 +2,19 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, BookOpen, Library } from 'lucide-react';
+import { Plus, BookOpen, Library, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose
+} from '@/components/ui/sheet';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,6 +43,7 @@ export function Header() {
           <span className="animate-fade-in">FlashLearn</span>
         </Link>
         
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           <Button variant="ghost" asChild>
             <Link to="/" className="text-sm font-medium transition-colors">
@@ -52,6 +61,57 @@ export function Header() {
             </Link>
           </Button>
         </nav>
+        
+        {/* Mobile Navigation */}
+        {isMobile && (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+              <div className="flex flex-col space-y-4 mt-8">
+                <SheetClose asChild>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link to="/" className="flex items-center">
+                      Home
+                    </Link>
+                  </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link to="/library" className="flex items-center">
+                      My Library
+                    </Link>
+                  </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link to="/study" className="flex items-center">
+                      Study
+                    </Link>
+                  </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link to="/create" className="flex items-center">
+                      Create
+                    </Link>
+                  </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link to="/import" className="flex items-center">
+                      Import
+                    </Link>
+                  </Button>
+                </SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
