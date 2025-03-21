@@ -4,8 +4,6 @@ import { Flashcard as FlashcardType } from '@/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { RotateCw } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface FlashcardProps {
   card: FlashcardType;
@@ -17,24 +15,14 @@ export function Flashcard({ card, showExample = true }: FlashcardProps) {
   const [height, setHeight] = useState<number | undefined>(undefined);
   const frontRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (frontRef.current && backRef.current) {
       const frontHeight = frontRef.current.offsetHeight;
       const backHeight = backRef.current.offsetHeight;
-      
-      // Set minimum height to ensure cards aren't too small
-      // Use larger minimum height for content that might be longer
-      const minHeight = 200;
-      const calculatedHeight = Math.max(frontHeight, backHeight, minHeight);
-      
-      // Set a maximum height on mobile to prevent very tall cards
-      const maxHeight = isMobile ? 400 : 600;
-      
-      setHeight(Math.min(calculatedHeight, maxHeight));
+      setHeight(Math.max(frontHeight, backHeight, 200));
     }
-  }, [card, isMobile]);
+  }, [card]);
 
   function handleFlip() {
     setFlipped(prev => !prev);
@@ -75,18 +63,17 @@ export function Flashcard({ card, showExample = true }: FlashcardProps) {
           )}
         >
           <div className="text-xs font-medium text-primary mb-2">Definition</div>
-          <ScrollArea className="flex-grow pr-4 -mr-4">
-            <p className="text-lg mb-4 whitespace-pre-wrap">{card.definition}</p>
-            
-            {showExample && card.example && (
-              <>
-                <div className="text-xs font-medium text-primary mb-2">Example</div>
-                <p className="text-sm italic text-muted-foreground whitespace-pre-wrap">{card.example}</p>
-              </>
-            )}
-          </ScrollArea>
+          <p className="text-lg mb-4">{card.definition}</p>
           
-          <div className="text-xs text-muted-foreground self-end mt-4 pt-2">Click to flip</div>
+          {showExample && card.example && (
+            <>
+              <div className="text-xs font-medium text-primary mb-2">Example</div>
+              <p className="text-sm italic text-muted-foreground">{card.example}</p>
+            </>
+          )}
+          
+          <div className="flex-grow"></div>
+          <div className="text-xs text-muted-foreground self-end mt-4">Click to flip</div>
         </div>
       </div>
     </div>
